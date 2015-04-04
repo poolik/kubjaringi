@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <meta name="author" content="Tõnis Pool">
+
+  <title>Ingliste</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.css" rel="stylesheet"/>
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #eee !important;
+    }
+
+    .wrapper {
+      margin-top: 80px;
+      margin-bottom: 80px;
+    }
+
+    .form-signin {
+      max-width: 480px;
+      padding: 15px 35px 45px;
+      margin: 0 auto;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .form-control {
+      position: relative;
+      font-size: 16px;
+      height: auto;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrapper">
+  <form class="form-signin" action="/login" method="post">
+    <h2 class="form-signin-heading">Ütle "Sõber" ja sisene!</h2>
+    <br>
+    <input type="password" class="form-control input-lg" name="password" placeholder="Parool" required="" autofocus=""/>
+    <input type="hidden" class="form-control input-lg" name="username" placeholder="Parool" value="e333"/>
+    <br>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sisene</button>
+  </form>
+</div>
+</body>
+</html>
