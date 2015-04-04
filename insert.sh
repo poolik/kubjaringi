@@ -17,5 +17,5 @@ DEF:a=/home/pi/temp/temperatures.rrd:temps_inside:AVERAGE \
 XPORT:a:"Temperatuur" > temperature48h.xml
 
 API_KEY=`cat /home/pi/ingliste/apikey.txt`
-HOST="https://ingliste.herokuapp.com/"
-curl ${HOST}/file-upload -X POST -F temperature3h=@temperature3h.xml -F temperature24h=@temperature24h.xml -F temperature48h=temperature48h.xml -F "apikey=$API_KEY"
+HOST="https://ingliste.herokuapp.com"
+curl ${HOST}/file-upload -X POST -F temperature3h=@temperature3h.xml -F temperature24h=@temperature24h.xml -F temperature48h=@temperature48h.xml -F "apikey=$API_KEY"
