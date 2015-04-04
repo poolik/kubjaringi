@@ -1,0 +1,20 @@
+#!/bin/sh
+rrdtool create temperatures.rrd \
+--start N \
+--step 300 \
+ DS:temps_inside:GAUGE:1200:-40:50 \
+ RRA:AVERAGE:0.5:1:2880 \
+ RRA:AVERAGE:0.5:6:700 \
+ RRA:AVERAGE:0.5:6:700 \
+ RRA:AVERAGE:0.5:24:775 \
+ RRA:AVERAGE:0.5:144:1500 \
+ RRA:AVERAGE:0.5:288:2000 \
+ RRA:MIN:0.5:1:600 \
+ RRA:MIN:0.5:6:700 \
+ RRA:MIN:0.5:24:775 \
+ RRA:MIN:0.5:144:1500 \
+ RRA:MIN:0.5:288:2000 \
+ RRA:MAX:0.5:6:700 \
+ RRA:MAX:0.5:24:775 \
+ RRA:MAX:0.5:144:1500 \
+ RRA:MAX:0.5:288:2000
