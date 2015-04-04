@@ -89,7 +89,7 @@ wss.on("connection", function(ws) {
           authenticatedSocket.ping();
           authenticatedSocket.pingssent++;
         }
-      }, 75 * 1000);  //  75 seconds between pings
+      }, 30 * 1000);  //  30 seconds between pings
       authenticatedSocket.on("close", function() {
         console.log("websocket connection close");
         clearInterval(id);
