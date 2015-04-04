@@ -4,20 +4,35 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var flash = require('connect-flash');
+var multer  = require('multer');
 var app = express();
 var port = process.env.PORT || 5000;
-var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport'), LocalStrategy = require('passport-local').Strategy, APIStrategy = require('passport-localapikey').Strategy;
 
 var _ = require('underscore');
 var fs = require('fs');
 var authenticatedSocket = null;
+var API_KEY = process.env.INGLISTE_SHARED_SECRET;
+
+var UPLOADS = './uploads';
+if (!fs.existsSync(UPLOADS)){
+  fs.mkdirSync('./uploads');
+}
+var USER = {name: "külaelanik"};
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
       process.nextTick(function () {
         if (process.env.PASSWORD !== password) return done(null, false, { message: 'Incorrect password.' });
-        return done(null, {name:"külaelanik"});
+        return done(null, USER);
       });
+    }
+));
+
+passport.use(new APIStrategy(
+    function(apikey, done) {
+      if (apikey !== API_KEY) return done(null, false);
+      return done(null, USER);
     }
 ));
 
@@ -31,21 +46,37 @@ passport.deserializeUser(function(id, done) {
 
 // Define static HTML files
 app.use(express.static(__dirname + '/static'));
-app.use("/data", express.static(__dirname + '/temp'));
-app.use(bodyParser.json());
+app.use("/data", express.static(__dirname + '/uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({secret: '35gas()"Fe'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-var API_KEY = process.env.INGLISTE_SHARED_SECRET;
-
 app.post('/login',
     passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
     function(req, res) {
       res.redirect('/');
     });
+
+app.post('/file-upload', multer({ dest: './uploads/', putSingleFilesInArray: true, limits: {fileSize:5000000}}),
+    function(req, res, next) {
+      passport.authenticate('localapikey', function(err, user, info) {
+        if (err) { return next(err); }
+        if (!user) {
+          _.each(req.files, function(file) {
+            _.each(file, function(f) {fs.unlink(f.path);});
+          });
+          res.status(401).end();
+        } else {
+          _.each(req.files, function(file) {
+            var metadata = file[0];
+            fs.rename(metadata.path, UPLOADS + "/" + metadata.originalname);
+          });
+          res.status(200).end();
+        }
+      })(req, res, next);
+});
 
 app.get('/login',function(req, res){
   res.sendFile(__dirname + '/html/login.html');
