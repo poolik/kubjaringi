@@ -45,7 +45,7 @@ var getDevice = function (error, stdout, stderr) {
 
 exec("irsend list \"\" \"\"", getDevice); // Get all device information
 
-host = "localhost:5000";
+host = "ingliste.herokuapp.com/";
 new ReconnectSocket(host).connect();
 
 function ReconnectSocket(url) {
