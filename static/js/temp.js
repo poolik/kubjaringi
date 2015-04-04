@@ -3,16 +3,19 @@ urlPath = "temperature";
 // return everything after the question mark
 function GetUrlParameter() {
   var idx = window.location.href.indexOf("?");
-  if (idx < 0) return "";
+  if (idx < 0) return "24h";
   return window.location.href.substring(idx + 1);
 }
-urlParameter = GetUrlParameter();
 
 /**
  * @return {string}
  */
 function GetChartXml() {
-  switch (urlParameter) {
+  var urlParameter = GetUrlParameter();
+  var $temp = $(".temp-menu");
+  $temp.find("a").removeClass("active");
+  $temp.find("."+urlParameter).addClass("active");
+  switch (GetUrlParameter()) {
     case "3h":
     case "48h":
     case "1w":
@@ -29,6 +32,7 @@ function GetChartXml() {
  * @return {string}
  */
 function GetChartTitle() {
+  var urlParameter = GetUrlParameter();
   switch (urlParameter) {
     case "3h":
       return "Viimased 3 tundi";
