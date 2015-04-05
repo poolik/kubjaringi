@@ -17,11 +17,23 @@ $(".remote-screen a").click(function(event) {
   var $this = $(this);
     document.body.style.opacity = "0.5";
   $.ajax({
-    url: $(this).attr("href")
-  }).done(function(data) {
-    console.log(data);
-    console.log($this);
-    document.body.style.opacity="1"
+    url: $(this).attr("href"),
+    success: function(data) {
+      document.body.style.opacity="1";
+      console.log("SUCESS:", data);
+      $(document).trigger("add-alerts", [{
+          'message': data,
+          'priority': 'success'
+      }]);
+    },
+    error: function(data) {
+      document.body.style.opacity="1";
+      console.log("ERROR:", data);
+      $(document).trigger("add-alerts", [{
+        'message': data.responseText,
+        'priority': 'danger'
+      }]);
+    }
   });
   event.preventDefault();
   return true;

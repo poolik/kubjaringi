@@ -141,4 +141,15 @@ $(document).ready(function () {
       else $("#content").text("Viga! " + error.responseText);
     }
   });
+
+  $.ajax({
+    type: "GET",
+    url: "/status",
+    success: function() {
+      $(".status" ).addClass( "badge-success");
+    },
+    error: function() {
+      $(".status" ).addClass( "badge-danger");
+    }
+  });
 });

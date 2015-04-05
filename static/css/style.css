@@ -127,6 +127,14 @@ nav.navbar {
     color: white;
 }
 
+.badge-success {
+    background-color: #5cb85c;
+}
+
+.badge-danger {
+    background-color: #d9534f;
+}
+
 .navbar-fixed-top {
     margin: 0;
 }

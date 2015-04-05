@@ -82,6 +82,11 @@ app.get('/login',function(req, res){
   res.sendFile(__dirname + '/html/login.html');
 });
 
+app.get('/status',function(req, res){
+  if (authenticatedSocket === null) res.status(503).end();
+  else res.status(200).end();
+});
+
 app.get('/', ensureAuthenticated,function(req, res){
   res.sendFile(__dirname + '/html/index.html');
 });
@@ -95,12 +100,14 @@ app.get('/send/:device/:key', function(req, res) {
     authenticatedSocket.once('message', function(msg) {
       var msgObj = JSON.parse(msg);
       console.log("RECEIVED", msgObj);
-      if (_.has(msgObj, "error")) res.send("ERROR: " + msgObj.error);
-      else res.send("SUCCESS: " + msgObj.success);
+      if (_.has(msgObj, "error")) res.status(500).send("ERROR: " + msgObj.error);
+      else res.status(200).send("SUCCESS: " + msgObj.success);
     });
     var data = JSON.stringify({device: deviceName, key: key});
     console.log("SENDING:", data);
     authenticatedSocket.send(data);
+  } else {
+    res.status(503).send("ERROR: remote is offline!");
   }
 });
 
