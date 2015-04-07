@@ -46,15 +46,18 @@ var getDevice = function (error, stdout, stderr) {
 exec("irsend list \"\" \"\"", getDevice); // Get all device information
 
 host = "ingliste.herokuapp.com/";
+//host = "localhost:5000";
 new ReconnectSocket(host).connect();
 
 function ReconnectSocket(url) {
   this.url = url;
   this.ws = undefined;
+  var intervalId = undefined;
   var reconnectDecay = 1.5;
   var reconnectAttempts = 0;
   var reconnectInterval = 1000; // 1 sec
   var maxReconnectInterval = 300000; // 5 min
+  var pingsUnanswered = 0;
   var that = this;
 
   this.connect = function() {
@@ -71,6 +74,10 @@ function ReconnectSocket(url) {
     that.ws.on('message', message);
     that.ws.once('close', reconnect);
     that.ws.once('error', reconnect);
+    that.ws.on('pong', function() {
+      pingsUnanswered = 0;
+      winston.info("pong");
+    });
   }
 
   function createSocket() {
@@ -78,6 +85,7 @@ function ReconnectSocket(url) {
   }
 
   function reconnect() {
+    clearInterval(intervalId);
     var timeout = reconnectInterval * Math.pow(reconnectDecay, reconnectAttempts);
     setTimeout(function () {
       winston.info("Reconnecting!");
@@ -90,6 +98,13 @@ function ReconnectSocket(url) {
     winston.info("Connected!");
     reconnectAttempts = 0;
     that.ws.send(JSON.stringify({apikey:fs.readFileSync(__dirname+"/apikey.txt", "UTF-8")}));
+    intervalId = setInterval(function() {
+      if (pingsUnanswered >= 2) that.ws.close();
+      else {
+        that.ws.ping();
+        pingsUnanswered++;
+      }
+    }, 30 * 1000);  //  30 seconds between pings
   }
 
   function message(data, flags) {
