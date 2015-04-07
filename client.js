@@ -76,7 +76,6 @@ function ReconnectSocket(url) {
     that.ws.once('error', reconnect);
     that.ws.on('pong', function() {
       pingsUnanswered = 0;
-      winston.info("pong");
     });
   }
 
