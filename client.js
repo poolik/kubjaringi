@@ -96,6 +96,7 @@ function ReconnectSocket(url) {
   function open() {
     winston.info("Connected!");
     reconnectAttempts = 0;
+    pingsUnanswered = 0;
     that.ws.send(JSON.stringify({apikey:fs.readFileSync(__dirname+"/apikey.txt", "UTF-8")}));
     intervalId = setInterval(function() {
       if (pingsUnanswered >= 2) that.ws.close();
