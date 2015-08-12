@@ -24,7 +24,6 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
     $scope.temperature = 21;
     $scope.alerts = [];
     var requestPending = false;
-    var initDone = false;
     getRemoteState();
 
     observeOnScope($scope, 'isave').skip(2).subscribe(function () {
@@ -101,7 +100,6 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
         $scope.temperature = data.data.temperature;
         $scope.isave = data.data.isave;
         $scope.mode = data.data.mode;
-        initDone = true;
       }, errorHandler)
     }
 
