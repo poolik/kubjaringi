@@ -15,7 +15,7 @@ var authenticatedSocket = null;
 var API_KEY = process.env.INGLISTE_SHARED_SECRET;
 
 var UPLOADS = './uploads';
-if (!fs.existsSync(UPLOADS)){
+if (!fs.existsSync(UPLOADS)) {
   fs.mkdirSync('./uploads');
 }
 var USER = {name: "külaelanik"};
@@ -48,6 +48,7 @@ passport.deserializeUser(function(id, done) {
 app.use(express.static(__dirname + '/static'));
 app.use("/data", express.static(__dirname + '/uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(session({secret: '35gas()"Fe'}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -87,15 +88,12 @@ app.get('/status',function(req, res){
   else res.status(200).end();
 });
 
-app.get('/', ensureAuthenticated,function(req, res){
+app.get('/', ensureAuthenticated, function(req, res){
   res.sendFile(__dirname + '/html/index.html');
 });
 
-// define GET request for /send/deviceName/buttonName
-app.get('/send/:device/:key', function(req, res) {
-  var deviceName = req.param("device");
-  var key = req.param("key").toUpperCase();
-
+app.post('/remote', ensureAuthenticated, function(req, res) {
+  console.log(req.body);
   if (authenticatedSocket !== null) {
     authenticatedSocket.once('message', function(msg) {
       var msgObj = JSON.parse(msg);
@@ -103,12 +101,15 @@ app.get('/send/:device/:key', function(req, res) {
       if (_.has(msgObj, "error")) res.status(500).send("ERROR: " + msgObj.error);
       else res.status(200).send("SUCCESS: " + msgObj.success);
     });
-    var data = JSON.stringify({device: deviceName, key: key});
-    console.log("SENDING:", data);
-    authenticatedSocket.send(data);
+    //console.log("SENDING:", data);
+    //authenticatedSocket.send(data);
   } else {
     res.status(503).send("ERROR: remote is offline!");
   }
+});
+
+app.get('/remote', ensureAuthenticated, function(req, res) {
+  res.status(200).send({temperature:18, mode:'COLD', isave:true});
 });
 
 var server = http.createServer(app);

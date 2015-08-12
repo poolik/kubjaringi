@@ -84,6 +84,7 @@ function ReconnectSocket(url) {
   }
 
   function reconnect() {
+    winston.info("closed!");
     clearInterval(intervalId);
     var timeout = reconnectInterval * Math.pow(reconnectDecay, reconnectAttempts);
     setTimeout(function () {

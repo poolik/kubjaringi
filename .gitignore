@@ -1,6 +1,8 @@
 node_modules
 temp
+ir-parser
 *.iml
+**/.DS_Store
 .idea
 apikey.txt
 log
