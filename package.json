@@ -4,6 +4,7 @@
   "description": "Home automation project",
   "main": "server.js",
   "dependencies": {
+    "pg": "4.x",
     "express": "4.12.3",
     "express-session": "1.10.4",
     "ws": "0.7.1",
