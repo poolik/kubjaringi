@@ -21,24 +21,24 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
   function ($scope, $http, observeOnScope) {
     $scope.isave = false;
     $scope.mode = "";
-    $scope.temperature = 21;
+    var temperature = 21;
     $scope.alerts = [];
     var requestPending = false;
     getRemoteState();
 
     $scope.$createObservableFunction('increase')
-        .map(function () { return $scope.temperature; })
+        .map(function () { return temperature; })
         .filter(function(temp) { return temp < 30; })
-        .map(function() { return ++$scope.temperature; })
+        .map(function() { ++temperature; return setTemperature(temperature); })
         .debounce(500)
         .subscribe(function() {
           sendState();
         });
 
     $scope.$createObservableFunction('decrease')
-        .map(function () { return $scope.temperature; })
+        .map(function () { return temperature; })
         .filter(function(temp) { return temp > 16; })
-        .map(function() { return --$scope.temperature; })
+        .map(function() { --temperature; return setTemperature(temperature); })
         .debounce(500)
         .subscribe(function() {
           sendState();
@@ -79,7 +79,7 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
       if (!startRequest()) return;
       requestPending = true;
       document.body.style.opacity = "0.5";
-      $http.post("/remote", {temperature: $scope.temperature, mode:$scope.mode, isave:$scope.isave}).then(function(data) {
+      $http.post("/remote", {temperature: temperature, mode:$scope.mode, isave:$scope.isave}).then(function(data) {
         finishRequest(data);
         addInfoAlert(data.data);
       }, errorHandler);
@@ -89,12 +89,18 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
       if (!startRequest()) return;
       $http.get("/remote").then(function (data) {
         finishRequest(data);
-        $scope.temperature = data.data.temperature;
+        setTemperature(data.data.temperature);
         $scope.isave = data.data.isave;
         $scope.mode = data.data.mode;
         observeOnScope($scope, 'isave').skip(1).subscribe(function () { sendState(); });
         observeOnScope($scope, 'mode').skip(1).subscribe(function () { sendState(); });
       }, errorHandler)
+    }
+
+    function setTemperature(temp) {
+      temperature = temp;
+      $scope.temperature = temperature + "°C";
+      return temperature;
     }
 
     function errorHandler(data) {
