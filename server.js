@@ -128,7 +128,6 @@ app.get('/remote', ensureAuthenticated, function(req, res) {
         console.error(err);
         response.status(500).send("Error " + err);
       } else {
-        console.log(result.rows);
         res.status(200).send(result.rows[0]);
       }
     });

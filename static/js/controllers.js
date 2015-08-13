@@ -26,14 +26,6 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
     var requestPending = false;
     getRemoteState();
 
-    observeOnScope($scope, 'isave').skip(2).subscribe(function () {
-      sendState();
-    });
-
-    observeOnScope($scope, 'mode').skip(2).subscribe(function () {
-      sendState();
-    });
-
     $scope.$createObservableFunction('increase')
         .map(function () { return $scope.temperature; })
         .filter(function(temp) { return temp < 30; })
@@ -100,6 +92,8 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope',
         $scope.temperature = data.data.temperature;
         $scope.isave = data.data.isave;
         $scope.mode = data.data.mode;
+        observeOnScope($scope, 'isave').skip(1).subscribe(function () { sendState(); });
+        observeOnScope($scope, 'mode').skip(1).subscribe(function () { sendState(); });
       }, errorHandler)
     }
 
