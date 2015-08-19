@@ -1,3 +1,10 @@
+app.controller('AppCtrl', ['$scope', '$http', function($scope, $http) {
+  $scope.status = "badge-danger";
+  $http.get('/status').then(function () {
+    $scope.status = "badge-success";
+  })
+}]);
+
 app.controller('TemperatureCtrl', ['$scope', '$http', 'TempChart',
   function ($scope, $http, TempChart) {
     var defaultChart = {id: "24h", name: "24h"};

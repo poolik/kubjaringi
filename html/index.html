@@ -16,12 +16,12 @@
   <link href="css/weather-icons.min.css" rel="stylesheet" type="text/css"/>
 </head>
 
-<body ng-cloak>
+<body ng-cloak ng-controller="AppCtrl">
 
 <nav role="navigation" class="navbar navbar-default navbar-fixed-top navbar-nav">
   <div class="nav navbar-nav">
     <div class="navbar-header">
-      <a href="#" id="apptitle" class="navbar-brand" style="padding-left: 20px;"><span class="badge status" style="padding-top: 1px;margin-top: 2px;vertical-align: top;">&nbsp;</span> Ingliste</a>
+      <a href="#" id="apptitle" class="navbar-brand" style="padding-left: 20px;"><span class="badge status" ng-class="status" style="padding-top: 1px;margin-top: 2px;vertical-align: top;">&nbsp;</span> Ingliste</a>
     </div>
     <div id="tabBar" class="tabs" style="display: block;">
       <div class="nav nav-pills nav-justified">

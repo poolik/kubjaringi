@@ -73,7 +73,7 @@ function ReconnectSocket(url) {
 
   function message(data) {
     var messageObj = JSON.parse(data);
-    winston.info("RECEIVED: ", messageObj);
+    winston.info("RECEIVED: " + messageObj);
     var command = "sudo mitsu " + messageObj.temperature + " 1 " + modeToInt(messageObj.mode);
     exec(command, function (error, stdout, stderr) {
       if (error)
