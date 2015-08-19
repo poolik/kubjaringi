@@ -8,43 +8,6 @@ if (!fs.existsSync(__dirname + '/log')){
 }
 winston.add(winston.transports.File, {filename: __dirname + '/log/client.log', maxsize:10000000, maxFiles: 10});
 
-var devices = {};
-
-var getCommandsForDevice = function(deviceName) {
-  return function(error, stdout, stderr) {
-    var lines = stderr.split("\n");
-    for(var lineIndex in lines) {
-      var line = lines[lineIndex];
-      var parts = line.split(" ");
-      if(parts.length>2) {
-        var keyName = parts[2];
-        devices[deviceName].push(keyName);
-        winston.info(deviceName + " found key: "+keyName);
-      }
-    }
-  }
-};
-
-var getDevice = function (error, stdout, stderr) {
-  if(error) {
-    winston.info("irsend not available.");
-    return;
-  }
-  var lines = stderr.split("\n");
-  for(var lineIndex in lines) {
-    var line = lines[lineIndex];
-    var parts = line.split(" ");
-    if(parts.length>1) {
-      var deviceName = parts[1];
-      winston.info("device found: "+deviceName.trim());
-      devices[deviceName] = [];
-      exec("irsend list \""+deviceName+"\" \"\"", getCommandsForDevice(deviceName));
-    }
-  }
-};
-
-exec("irsend list \"\" \"\"", getDevice); // Get all device information
-
 host = "ingliste.herokuapp.com/";
 //host = "localhost:5000";
 new ReconnectSocket(host).connect();
@@ -108,39 +71,23 @@ function ReconnectSocket(url) {
     }, 30 * 1000);  //  30 seconds between pings
   }
 
-  function message(data, flags) {
+  function message(data) {
     var messageObj = JSON.parse(data);
     winston.info("RECEIVED: ", messageObj);
-
-    var deviceName = messageObj.device;
-    var key = messageObj.key.toUpperCase();
-
-    if (!devices.hasOwnProperty(deviceName)) { // Make sure that the user has requested a valid device
-      sendError("invalid device " + deviceName);
-      return;
-    }
-
-    var device = devices[deviceName]; // Make sure that the user has requested a valid key/button
-    var deviceKeyFound = false;
-    for (var i = 0; i < device.length; i++) {
-      if (device[i] === key) {
-        deviceKeyFound = true;
-        break;
-      }
-    }
-    if (!deviceKeyFound) {
-      sendError("invalid key number: " + key);
-      return;
-    }
-
-    // send command to irsend
-    var command = "irsend SEND_ONCE " + deviceName + " " + key;
+    var command = "sudo mitsu " + messageObj.temperature + " 1 " + modeToInt(messageObj.mode);
     exec(command, function (error, stdout, stderr) {
       if (error)
-        sendError("Error sending command");
+        sendError(stderr);
       else
         sendSuccess("Successfully sent command");
     });
+  }
+
+  function modeToInt(mode) {
+    if (mode === 'HEAT') return 0;
+    if (mode === 'COLD') return 1;
+    if (mode === 'FAN') return 2;
+    return 99;
   }
 
   function sendError(message) {
