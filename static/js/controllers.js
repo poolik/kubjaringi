@@ -35,22 +35,18 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope', 'rx', '$q',
       rx.Observable.merge(disableIsaveObservable, isaveObservable).throttleFirst(500).subscribe(function () { sendState(); });
     });
 
-    var increaseObservable = $scope.$createObservableFunction('temperatureChanged')
+    var temperatureChangedObservable = $scope.$createObservableFunction('temperatureChanged')
         .map(function () { return $scope.temperature; })
         .debounce(500);
 
     var selectModeObservable = $scope.$createObservableFunction('selectMode')
         .map(function() { return $scope.mode; });
 
-    var disableIsaveObservable = rx.Observable.merge(increaseObservable, selectModeObservable)
+    var disableIsaveObservable = rx.Observable.merge(temperatureChangedObservable, selectModeObservable)
         .do(function () { $scope.isave = false; });
 
     $scope.closeAlert = function(index) {
       $scope.alerts.splice(index, 1);
-    };
-
-    $scope.temperatureChanged = function(value) {
-      console.log("temperatureChanged", value);
     };
 
     function addInfoAlert(msg) {
