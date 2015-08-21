@@ -25,14 +25,6 @@
 
   <!-- Temperature selection -->
   <div class="btn-group col-xs-12">
-    <span class="col-xs-4 btn btn-primary btn-lg btn-number" ng-click="decrease()">
-      <i class="glyphicon glyphicon-minus"></i>
-    </span>
-    <span class="col-xs-4 input-group-lg">
-      <input type="text" style="text-align: center;" disabled class="form-control" ng-model="temperature" min="16" max="30">
-    </span>
-    <span class="col-xs-4 btn btn-primary btn-lg btn-number" ng-click="increase()">
-      <i class="glyphicon glyphicon-plus"></i>
-    </span>
+    <h-number value="temperature" min="16" max="30" step="1" plural="°C" change="temperatureChanged()"></h-number>
   </div>
 </div>

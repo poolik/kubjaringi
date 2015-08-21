@@ -28,33 +28,29 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope', 'rx', '$q',
   function ($scope, $http, observeOnScope, rx, $q) {
     $scope.isave = false;
     $scope.mode = "";
-    var temperature = 21;
+    $scope.temperature = 21;
     $scope.alerts = [];
     getRemoteState().then(function() {
       var isaveObservable = observeOnScope($scope, 'isave').skip(1);
       rx.Observable.merge(disableIsaveObservable, isaveObservable).throttleFirst(500).subscribe(function () { sendState(); });
     });
 
-    var increaseObservable = $scope.$createObservableFunction('increase')
-        .map(function () { return temperature; })
-        .filter(function (temp) { return temp < 30; })
-        .map(function () { ++temperature; if (temperature < 16) temperature = 16; return setTemperature(temperature); })
-        .debounce(500);
-
-    var decreaseObservable = $scope.$createObservableFunction('decrease')
-        .map(function () { return temperature; })
-        .filter(function(temp) { return temp > 16; })
-        .map(function() { --temperature; return setTemperature(temperature); })
+    var increaseObservable = $scope.$createObservableFunction('temperatureChanged')
+        .map(function () { return $scope.temperature; })
         .debounce(500);
 
     var selectModeObservable = $scope.$createObservableFunction('selectMode')
         .map(function() { return $scope.mode; });
 
-    var disableIsaveObservable = rx.Observable.merge(increaseObservable, decreaseObservable, selectModeObservable)
+    var disableIsaveObservable = rx.Observable.merge(increaseObservable, selectModeObservable)
         .do(function () { $scope.isave = false; });
 
     $scope.closeAlert = function(index) {
       $scope.alerts.splice(index, 1);
+    };
+
+    $scope.temperatureChanged = function(value) {
+      console.log("temperatureChanged", value);
     };
 
     function addInfoAlert(msg) {
@@ -70,14 +66,17 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope', 'rx', '$q',
       document.body.style.opacity = "1";
     }
 
+    function setState(data) {
+      $scope.temperature = data.data.temperature;
+      $scope.isave = data.data.isave;
+      $scope.mode = data.data.mode;
+    }
+
     function sendState() {
       document.body.style.opacity = "0.5";
-      $http.post("/remote", {temperature: temperature, mode:$scope.mode, isave:$scope.isave}).then(function(data) {
+      $http.post("/remote", {temperature: $scope.temperature, mode:$scope.mode, isave:$scope.isave}).then(function(data) {
         finishRequest(data);
-        setTemperature(data.data.temperature);
-        $scope.isave = data.data.isave;
-        console.log("$scope.isave", $scope.isave);
-        $scope.mode = data.data.mode;
+        setState(data);
         addInfoAlert("Successfully updated!");
       }, function (error) {
         getRemoteState().then(
@@ -90,21 +89,13 @@ app.controller('RemoteCtrl', ['$scope', '$http', 'observeOnScope', 'rx', '$q',
       var d = $q.defer();
       $http.get("/remote").then(function (data) {
         finishRequest(data);
-        setTemperature(data.data.temperature);
-        $scope.isave = data.data.isave;
-        $scope.mode = data.data.mode;
+        setState(data);
         d.resolve();
       }, function (error) {
         errorHandler(error);
         d.reject(error);
       });
       return d.promise;
-    }
-
-    function setTemperature(temp) {
-      temperature = temp;
-      $scope.temperature = temperature + "°C";
-      return temperature;
     }
 
     function errorHandler(data) {

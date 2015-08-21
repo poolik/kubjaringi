@@ -338,3 +338,29 @@ a.navbar-brand {
     background-color: #dc3055;
     border-color: #dc3055;
 }
+
+.input-group-addon,
+.input-group-addon[disabled]:hover,
+.input-group-addon[disabled] {
+    color: #4579fb;
+    background-color: #ffffff;
+    border-color: #4579fb;
+    cursor: pointer;
+}
+
+.input-group-addon:hover,
+.input-group-addon:focus,
+.input-group-addon:active {
+    color: #fff;
+    background-color: #4579fb;
+    border-color: #4579fb;
+    cursor: pointer;
+}
+
+.input-group > .form-control {
+    height: 45px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 6px;
+}
