@@ -133,7 +133,7 @@ function sendRemoteState(state) {
   });
   var timeoutId = setTimeout(function () {
     d.reject("Remote is not answering!");
-  }, 4000);
+  }, 10000);
   console.log("SENDING:", state);
   authenticatedSocket.send(JSON.stringify(state));
   return d.promise;
