@@ -1,0 +1,5 @@
+# Insert new readings every 5 min
+*/5 * * * * /home/pi/ingliste/insert.sh
+
+# Export weekly+ data hourly
+@hourly /home/pi/ingliste/export_daily.sh
