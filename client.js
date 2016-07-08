@@ -74,8 +74,11 @@ function ReconnectSocket(url) {
   function message(data) {
     var messageObj = JSON.parse(data);
     winston.info("RECEIVED: " + messageObj);
-    var command = "sudo mitsu " + messageObj.temperature + " 1 " + modeToInt(messageObj.mode);
-    exec(command, function (error, stdout, stderr) {
+    var button = create_button_name(messageObj.mode, messageObj.temperature);
+    if (messageObj.off) {
+      button = 'OFF';
+    }
+    exec('irsend SEND_ONCE AC ' + button, function (error, stdout, stderr) {
       if (error)
         sendError(stderr);
       else
@@ -83,11 +86,8 @@ function ReconnectSocket(url) {
     });
   }
 
-  function modeToInt(mode) {
-    if (mode === 'HEAT') return 0;
-    if (mode === 'COLD') return 1;
-    if (mode === 'FAN') return 2;
-    return 99;
+  function create_button_name(mode, temp) {
+    return mode + "_ON_" + temp;
   }
 
   function sendError(message) {
