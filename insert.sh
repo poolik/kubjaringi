@@ -4,15 +4,15 @@ temp=`cat /sys/bus/w1/devices/28*/w1_slave | awk '/t=/ {print substr($10,3) / 10
 cd /home/pi/temp
 rrdtool update temperatures.rrd N:${temp}
 
-rrdtool xport -s now-3h -e now --step 300 \
+rrdtool xport -s now-3h -e now --showtime --step 300 \
 DEF:a=/home/pi/temp/temperatures.rrd:temps_inside:AVERAGE \
 XPORT:a:"Temperatuur" > temperature3h.xml
 
-rrdtool xport -s now-24h -e now --step 900 \
+rrdtool xport -s now-24h -e now --showtime --step 900 \
 DEF:a=/home/pi/temp/temperatures.rrd:temps_inside:AVERAGE \
 XPORT:a:"Temperatuur" > temperature24h.xml
 
-rrdtool xport -s now-48h -e now --step 1800 \
+rrdtool xport -s now-48h -e now --showtime --step 1800 \
 DEF:a=/home/pi/temp/temperatures.rrd:temps_inside:AVERAGE \
 XPORT:a:"Temperatuur" > temperature48h.xml
 
