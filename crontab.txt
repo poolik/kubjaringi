@@ -3,3 +3,6 @@
 
 # Export weekly+ data hourly
 @hourly /home/pi/ingliste/export_daily.sh
+
+# Backup the temperature database daily
+@daily /home/pi/ingliste/backup_rrd_db.sh
