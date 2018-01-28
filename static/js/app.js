@@ -7,10 +7,6 @@ app.config(['$routeProvider',
           templateUrl: 'partials/temperature.html',
           controller: 'TemperatureCtrl'
         }).
-        when('/remote', {
-          templateUrl: 'partials/remote.html',
-          controller: 'RemoteCtrl'
-        }).
         otherwise({
           redirectTo: '/temperature'
         });
