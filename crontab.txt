@@ -1,8 +1,8 @@
 # Insert new readings every 5 min
-*/5 * * * * /home/pi/ingliste/insert.sh
+*/5 * * * * /home/pi/kubjaringi/insert.sh
 
 # Export weekly+ data hourly
-@hourly /home/pi/ingliste/export_daily.sh
+@hourly /home/pi/kubjaringi/export_daily.sh
 
 # Backup the temperature database daily
-@daily /home/pi/ingliste/backup_rrd_db.sh
+@daily /home/pi/kubjaringi/backup_rrd_db.sh

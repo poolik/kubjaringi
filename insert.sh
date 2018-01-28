@@ -16,6 +16,6 @@ rrdtool xport -s now-48h -e now --showtime --step 1800 \
 DEF:a=/home/pi/temp/temperatures.rrd:temps_inside:AVERAGE \
 XPORT:a:"Temperatuur" > temperature48h.xml
 
-API_KEY=`cat /home/pi/ingliste/apikey.txt`
-HOST="https://ingliste.herokuapp.com"
+API_KEY=`cat /home/pi/kubjaringi/apikey.txt`
+HOST="https://kubjaringi.herokuapp.com"
 curl ${HOST}/file-upload -X POST -F temperature3h=@temperature3h.xml -F temperature24h=@temperature24h.xml -F temperature48h=@temperature48h.xml -F "apikey=$API_KEY"

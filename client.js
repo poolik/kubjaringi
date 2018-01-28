@@ -8,7 +8,7 @@ if (!fs.existsSync(__dirname + '/log')){
 }
 winston.add(winston.transports.File, {filename: __dirname + '/log/client.log', maxsize:10000000, maxFiles: 10});
 
-host = "ingliste.herokuapp.com/";
+host = "kubjaringi.herokuapp.com/";
 //host = "localhost:5000";
 new ReconnectSocket(host).connect();
 

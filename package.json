@@ -1,5 +1,5 @@
 {
-  "name": "ingliste",
+  "name": "kubjaringi",
   "version": "0.0.1",
   "description": "Home automation project",
   "main": "server.js",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/poolik/ingliste"
+    "url": "https://github.com/poolik/kubjaringi"
   },
   "author": "Tõnis Pool",
   "license": "MIT"

@@ -14,7 +14,7 @@ var passport = require('passport'), LocalStrategy = require('passport-local').St
 var _ = require('underscore');
 var fs = require('fs');
 var authenticatedSocket = null;
-var API_KEY = process.env.INGLISTE_SHARED_SECRET;
+var API_KEY = process.env.KUBJARINGI_SHARED_SECRET;
 
 var UPLOADS = './uploads';
 if (!fs.existsSync(UPLOADS)) {

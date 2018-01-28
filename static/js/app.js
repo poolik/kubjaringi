@@ -1,4 +1,4 @@
-var app = angular.module('ingliste', ['ui.bootstrap', 'ngRoute', 'rx', 'ui.checkbox', 'angularNumberPicker']);
+var app = angular.module('kubjaringi', ['ui.bootstrap', 'ngRoute', 'rx', 'ui.checkbox', 'angularNumberPicker']);
 
 app.config(['$routeProvider',
   function ($routeProvider) {
